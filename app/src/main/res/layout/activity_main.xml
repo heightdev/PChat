@@ -1,0 +1,90 @@
+<android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+    <!-- The main content view -->
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/round_corners_white_off_shape">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="8dp"
+                            android:id="@+id/main_chat_display"/>
+                </ScrollView>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                <EditText android:layout_width="0dp"
+                          android:layout_height="match_parent"
+                          android:layout_weight="1"
+                          android:layout_marginRight="8dp"
+                          android:background="@drawable/round_corners_white_off_shape"
+                          android:id="@+id/main_input"
+                          android:hint="@string/main_input_hint"
+                          android:padding="8dp"
+                          android:singleLine="true"/>
+
+                <ImageButton
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/round_corners_white_off_button_bg"
+                        android:id="@+id/main_send_bt"
+                        android:src="@drawable/ic_send"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="60dp"
+                android:background="@drawable/round_corners_white_off_button_bg"
+                android:src="@drawable/ic_left_row"
+                android:id="@+id/main_user_list_bt"
+                android:layout_marginRight="-4dp"/>
+
+    </RelativeLayout>
+
+    <!-- The user list -->
+    <com.poo.pchat.view.UserListTab
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/round_corners_white_off_shape"
+            android:id="@+id/main_user_list"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:layout_gravity="end"/>
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="orange_regular">#E6821F</color>
+    <color name="orange_dark">#C36100</color>
+
+    <color name="yellow_regular">#EDAD1E</color>
+
+    <color name="gray_light">#d8d8d8</color>
+    <color name="gray_regular">#9B9B9B</color>
+    <color name="gray_dark">#606060</color>
+
+    <color name="white_off_light">#fcfcfc</color>
+    <color name="white_off">#f7f7f7</color>
+    <color name="white_regular">#FFF</color>
+
+    <color name="blue_regular">#0f75bc</color>
+</resources>

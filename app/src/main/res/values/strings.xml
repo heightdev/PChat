@@ -1,0 +1,43 @@
+<resources>
+
+    <!-- General - BEGIN /-->
+    <string name="app_name">P-Chat</string>
+    <!-- General - END /-->
+
+    <!-- ActionBar - BEGIN /-->
+    <string name="action_audio">Anexar áudio</string>
+    <string name="action_image">Anexar imagem</string>
+    <string name="action_connect">Conectar</string>
+    <string name="action_disconnect">Desconectar</string>
+    <string name="action_change_name">Alterar nome</string>
+    <string name="action_about">Sobre</string>
+    <!-- ActionBar - END /-->
+
+    <!-- MainActivity - BEGIN /-->
+    <string name="main_input_hint">Digite algo...</string>
+    <string name="main_put_server_ip">Digite o IP e a porta do servidor (Ex: 192.168.0.2:8080):</string>
+    <string name="main_connection_failure">A tentativa de conexão falhou. Verifique se o IP e a porta do servidor estão corretos.</string>
+    <string name="main_disconnection_failure">Ocorreu um erro ao tentar desconectar. Reincie a aplicação para evitar outros problemas.</string>
+    <string name="main_error_code">Código do erro:</string>
+    <string name="main_successfully_connected">Conectado com sucesso!</string>
+    <string name="main_successfully_disconnected">Desconectado com sucesso!</string>
+    <string name="main_not_connected">Você precisa estar conectado para fazer isso!</string>
+    <string name="main_put_new_name">Digite o novo nome:</string>
+    <!-- MainActivity - END /-->
+
+    <!-- CustomDialog - BEGIN /-->
+    <string name="custom_dialog_ok">OK</string>
+    <string name="custom_dialog_cancel">Cancel</string>
+    <!-- CustomDialog - END /-->
+
+    <!-- AboutDialog - BEGIN /-->
+    <string name="about_message">
+        \tEste projeto foi desenvolvido como parte da disciplina de
+        Programação Orientada à Objetos do curso de redes do IFPB.\n\n
+        <b>Alunos:</b>\n
+        Adjamilton Junior\n
+        Felipe Porge Xavier\n\n
+        <b>Professor:</b>\n
+        Petrônio Medeiros</string>
+    <!-- AboutDialog - END /-->
+</resources>
