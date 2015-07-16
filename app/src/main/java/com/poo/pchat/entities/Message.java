@@ -1,11 +1,14 @@
 package com.poo.pchat.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * This class represents a message.
  *
+ * @author Adjamilton Medeiros de Almeida Junior - http://github.com/ajunior
+ * @author Felipe Porge Xavier - http://www.felipeporge.com
  */
 public class Message implements Serializable {
 
@@ -22,83 +25,174 @@ public class Message implements Serializable {
     public static final int LOGIN = 0, LOGOUT = 1, LIST = 2, MESSAGE_FOR_ALL = 3, PRIVATE_MESSAGE = 4, RENAME_USERNAME = 5;
 
     private int type;
-    private String ipSender; // Número do IP de quem enviou a mensagem.
-    private int portSender;
+    private String ipSender; // IP number of who sent the message.
     private String fromUser;
     private String message;
     private String toUser;
-    private SimpleDateFormat date;
+    private Date date;
+    private Object extra;
 
+    /**
+     * Constructor method.
+     * @param type - Message type.
+     * @param msg - Message.
+     */
     public Message(int type, String msg) {
         this.type = type;
         this.message = msg;
-
     }
 
-    public Message(int type, String ipSender, int portSender, String fromUser, String message, String toUser,
-                   SimpleDateFormat date) {
+    /**
+     * Constructor method.
+     * @param type - Message type.
+     * @param extra - Message extras.
+     */
+    public Message(int type, Object extra) {
+        this.type = type;
+        this.extra = extra;
+    }
+
+    /**
+     * Constructor method.
+     * @param type - Message type.
+     * @param ipSender - Sender IP.
+     * @param fromUser - From username.
+     * @param msg - Message.
+     */
+    public Message(int type, String ipSender, String fromUser, String msg) {
+        this.type = type;
+        this.message = msg;
+        this.ipSender = ipSender;
+        this.fromUser = fromUser;
+        this.date = Calendar.getInstance().getTime();
+    }
+
+    /**
+     * Constructor method.
+     * @param type - Message type.
+     * @param ipSender - Sender IP.
+     * @param fromUser - From username.
+     * @param message - Message.
+     * @param toUser - User to receive.
+     */
+    public Message(int type, String ipSender, String fromUser, String message, String toUser) {
         this.type = type;
         this.ipSender = ipSender;
-        this.portSender = portSender;
         this.fromUser = fromUser;
         this.message = message;
         this.toUser = toUser;
-        this.date = date;
+        this.date = Calendar.getInstance().getTime();
     }
 
+    /**
+     * Gets message type.
+     * @return - Message type.
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * Sets message type.
+     * @param type - Message type.
+     */
     public void setType(int type) {
         this.type = type;
     }
 
+    /**
+     * Gets sender IP.
+     * @return - Sender IP.
+     */
     public String getIpSender() {
         return ipSender;
     }
 
+    /**
+     * Sets sender IP.
+     * @param ipSender - Sender IP.
+     */
     public void setIpSender(String ipSender) {
         this.ipSender = ipSender;
     }
 
-    public int getPortSender() {
-        return portSender;
+    /**
+     * Gets message extras.
+     * @return - Messages extras.
+     */
+    public Object getExtra() {
+        return extra;
     }
 
-    public void setPortSender(int portSender) {
-        this.portSender = portSender;
+    /**
+     * Sets message extras.
+     * @param extra - Message extras.
+     */
+    public void setExtra(Object extra) {
+        this.extra = extra;
     }
 
+    /**
+     * Gets 'from' username.
+     * @return - 'From' username.
+     */
     public String getFromUser() {
         return fromUser;
     }
 
+    /**
+     * Sets 'from' username.
+     * @param fromUser - 'From' username.
+     */
     public void setFromUser(String fromUser) {
         this.fromUser = fromUser;
     }
 
+    /**
+     * Gets message.
+     * @return - Message.
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Sets message.
+     * @param message - Message.
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Gets 'to' user.
+     * @return - 'to' user.
+     */
     public String getToUser() {
         return toUser;
     }
 
+    /**
+     * Sets 'to' user.
+     * @param toUser - 'to' user.
+     */
     public void setToUser(String toUser) {
         this.toUser = toUser;
     }
 
-    public SimpleDateFormat getDate() {
+    /**
+     * Gets message date.
+     * @return - Message date.
+     */
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(SimpleDateFormat date) {
+    /**
+     * Sets message date.
+     * @param date - Message date.
+     */
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -107,7 +201,6 @@ public class Message implements Serializable {
         return "ChatMessage{" +
                 "type=" + type +
                 ", ipSender='" + ipSender + '\'' +
-                ", portSender=" + portSender +
                 ", fromUser='" + fromUser + '\'' +
                 ", message='" + message + '\'' +
                 ", toUser='" + toUser + '\'' +

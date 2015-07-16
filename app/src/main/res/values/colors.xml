@@ -13,5 +13,9 @@
     <color name="white_off">#f7f7f7</color>
     <color name="white_regular">#FFF</color>
 
+    <color name="blue_light">#c8e6fb</color>
     <color name="blue_regular">#0f75bc</color>
+
+    <color name="green_light">#C1FFC1</color>
+    <color name="green_regular">#4BB74C</color>
 </resources>

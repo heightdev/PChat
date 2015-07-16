@@ -5,21 +5,22 @@ import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
+import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
+import com.poo.pchat.entities.Message;
 import com.poo.pchat.tcp.ClientAsyncTask;
 import com.poo.pchat.tcp.ConnectionError;
-import com.poo.pchat.tcp.OnConnectionStatusChanged;
+import com.poo.pchat.tcp.OnConnectionEventOccurs;
 import com.poo.pchat.view.CustomDialog;
 import com.poo.pchat.view.UserListTab;
+
+import java.text.SimpleDateFormat;
 
 /**
  * This class represents the main activity.
  */
-public class MainActivity extends ActionBarActivity implements View.OnClickListener, OnConnectionStatusChanged {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener, OnConnectionEventOccurs {
 
     private DrawerLayout mDrawerLayout;
 
@@ -47,6 +48,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mUserListBt.setOnClickListener(this);
 
         mInput = (EditText) findViewById(R.id.main_input);
+        mInput.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+
+                if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                        keyCode == EditorInfo.IME_ACTION_DONE ||
+                        event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+
+                    if(mClientAsyncTask == null || !mClientAsyncTask.isConnected()){
+                        Toast.makeText(MainActivity.this, getString(R.string.main_not_connected), Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+
+                    mClientAsyncTask.sendForAll(mInput.getText().toString());
+                    mInput.setText("");
+                    return true;
+
+                }
+                return false;
+            }
+        });
+
         mSend = (ImageButton) findViewById(R.id.main_send_bt);
         mSend.setOnClickListener(this);
     }
@@ -97,7 +121,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 customDialog.setOkOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        changeName(customDialog.readInput());
+                        if(mClientAsyncTask != null && mClientAsyncTask.isConnected())
+                            mClientAsyncTask.changeName(customDialog.readInput());
+                        else
+                            Toast.makeText(MainActivity.this, getString(R.string.main_not_connected), Toast.LENGTH_LONG).show();
                         customDialog.dismiss();
                     }
                 });
@@ -170,14 +197,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    /**
-     * Changes the user name.
-     * @param newName - New name.
-     */
-    public void changeName(String newName){
-
-    }
-
     @Override
     public void onClick(View v) {
         switch(v.getId()){
@@ -199,6 +218,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onDisconnect(final ConnectionError e) {
+        // Called by ClientAsyncTask.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -215,6 +235,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onConnect(final ConnectionError e) {
+        // Called by ClientAsyncTask.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -226,6 +247,57 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             getString(R.string.main_successfully_connected), Toast.LENGTH_LONG).show();
                 }
 
+            }
+        });
+    }
+
+    @Override
+    public void onMessageReceived(final Message msg){
+        // Called by ClientAsyncTask.
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout msgLayout = null;
+                switch(msg.getType()){
+                    case Message.MESSAGE_FOR_ALL:
+                        msgLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.public_text_message_received, mDisplay, false);
+                        ((TextView) msgLayout.findViewById(R.id.public_text_sender)).setText(msg.getFromUser() +
+                                "[" + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(msg.getDate()) + "] :");
+                        ((TextView) msgLayout.findViewById(R.id.public_text_message)).setText(msg.getMessage());
+                        break;
+
+                    case Message.PRIVATE_MESSAGE:
+                        msgLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.private_text_message_received, mDisplay, false);
+                        ((TextView) msgLayout.findViewById(R.id.public_text_sender)).setText(msg.getFromUser() +
+                                "[" + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(msg.getDate()) + "] :");
+                        ((TextView) msgLayout.findViewById(R.id.public_text_message)).setText(msg.getMessage());
+                        break;
+                    default:
+                        return;
+                }
+                mDisplay.addView(msgLayout);
+            }
+        });
+    }
+
+    @Override
+    public void onMessageSent(final Message msg){
+        // Called by ClientAsyncTask.
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout msgLayout = null;
+                switch(msg.getType()){
+                    case Message.MESSAGE_FOR_ALL:
+                        msgLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.public_text_message_sent, mDisplay, false);
+                        ((TextView) msgLayout.findViewById(R.id.public_text_sender)).setText(msg.getFromUser() +
+                                "[" + new SimpleDateFormat("dd/MM/yyyy HH:mm").format(msg.getDate()) + "] :");
+                        ((TextView) msgLayout.findViewById(R.id.public_text_message)).setText(msg.getMessage());
+                        break;
+                    default:
+                        return;
+                }
+                mDisplay.addView(msgLayout);
             }
         });
     }

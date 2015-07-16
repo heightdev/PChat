@@ -28,13 +28,13 @@ public class ClientAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private String mUsername;
     private Queue<Message> mDataToSend = new LinkedList<Message>();
-    private OnConnectionStatusChanged mListener;
+    private OnConnectionEventOccurs mListener;
 
     /**
      * Constructor method.
      * @throws IOException
      */
-    public ClientAsyncTask(OnConnectionStatusChanged listener) throws IOException {
+    public ClientAsyncTask(OnConnectionEventOccurs listener) throws IOException {
         mListener = listener;
         mUsername = Constants.DEFAULT_USERNAME + new SimpleDateFormat("HHmmss").format(Calendar.getInstance().getTime());
     }
@@ -62,7 +62,7 @@ public class ClientAsyncTask extends AsyncTask<Void, Void, Void> {
      * Close socket connection.
      */
     public void disconnect(){
-        mDataToSend.add(new Message(Message.LOGOUT, ""));
+        mDataToSend.add(new Message(Message.LOGOUT, mSocket.getInetAddress().getHostAddress(), mUsername,  ""));
     }
 
     /**
@@ -100,6 +100,7 @@ public class ClientAsyncTask extends AsyncTask<Void, Void, Void> {
             Log.w(Constants.DEBUG_TAG, mUsername + ": Logging in...");
 
             while(true) {
+                // Sends the next message from queue.
                 if (mDataToSend.size() > 0) {
                     tmpMessage = mDataToSend.poll();
                     if (tmpMessage != null) {
@@ -109,17 +110,31 @@ public class ClientAsyncTask extends AsyncTask<Void, Void, Void> {
                             if (tmpMessage.getType() == Message.LOGOUT) {
                                 Log.w(Constants.DEBUG_TAG, mUsername + ": Logging out...");
                                 break;
-                            } else {
+                            } if(tmpMessage.getType() == Message.RENAME_USERNAME){
+                                Log.w(Constants.DEBUG_TAG, mUsername + ": User renamed to " + tmpMessage.getMessage());
+                                mUsername = tmpMessage.getMessage();
+                            }else {
                                 Log.w(Constants.DEBUG_TAG, mUsername + ": Sent message for all \"" + tmpMessage.getMessage() + "\".");
+                                mListener.onMessageSent(tmpMessage);
                             }
                         } catch (Exception e) {
+                            e.printStackTrace();
                             mListener.onDisconnect(new ConnectionError(102, e.getCause().toString(), e.getMessage()));
                             break;
                         }
                     }
                 }
+
+                if(mSocket.getInputStream().available() > 0 && mObjIn.available() == 0) {
+                    // Read something available
+                    tmpMessage = (Message) mObjIn.readObject();
+                    if (tmpMessage != null) {
+                        mListener.onMessageReceived(tmpMessage);
+                    }
+                }
             }
         }catch(Exception e){
+            e.printStackTrace();
             mListener.onConnect(new ConnectionError(101, e.getClass().getSimpleName(), e.getMessage()));
             return null;
         }
@@ -148,6 +163,15 @@ public class ClientAsyncTask extends AsyncTask<Void, Void, Void> {
      * @param message - Message to send.
      */
     public void sendForAll(String message){
-        mDataToSend.add(new Message(Message.MESSAGE_FOR_ALL, message));
+        mDataToSend.add(new Message(Message.MESSAGE_FOR_ALL, mSocket.getInetAddress().getHostAddress(), mUsername, message));
+    }
+
+
+    /**
+     * Changes the user name.
+     * @param newName - New name.
+     */
+    public void changeName(String newName){
+        mDataToSend.add(new Message(Message.RENAME_USERNAME, mSocket.getInetAddress().getHostAddress(), mUsername, newName));
     }
 }
